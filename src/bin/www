@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+const https = require('https');
+const app = require('../app');
+const logger = require('../utils/logger');
+const httpsConfig = require('./../configs/https');
+const config = require('./../configs/turing');
+
+app.set('port', config.httpPort);
+
+const server = app.listen(app.get('port'), () => {
+  logger.info('Express server listening on port ' + server.address().port);
+});
+
+const hs = require('https').Server(httpsConfig.https, app);
+hs.listen(httpsConfig.port);

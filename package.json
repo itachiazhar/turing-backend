@@ -1,0 +1,21 @@
+{
+  "name": "turing-backend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "express": "^4.16.4",
+    "express-force-ssl": "^0.3.2",
+    "istanbul": "^0.4.5",
+    "jsdoc": "^3.5.5",
+    "jsonwebtoken": "^8.5.0",
+    "kue": "^0.11.6",
+    "lodash": "^4.17.11",
+    "mocha": "^6.0.2",
+    "nodemailer": "^5.1.1",
+    "stripe": "^6.25.1",
+    "winston": "^3.2.1"
+  }
+}
