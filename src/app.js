@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 const { RouteNotFoundError } = require('./responses/index');
-const { connectionPool } = require('./utils/database');
+const { Sequelize, sequelize } = require('./utils/database');
 
 const ddos = new Ddos(dosConfig);
 const authenticationRoutes = authentication.unless({
@@ -55,6 +55,14 @@ app.use((err, req, res, next) => {
 //   .filter(filename => /^[a-z].*\.js$/.test(filename))
 //   .map(filename => path.join(config.baseDirectory, 'src', 'jobs', filename))
 //   .forEach(require);
+
+fs.readdirSync(path.join(config.baseDirectory, 'src', 'models'))
+  .filter(filename => /^[a-z].*\.js$/.test(filename))
+  .map(filename => path.join(config.baseDirectory, 'src', 'models', filename))
+  .map(require)
+  .map(model => model.init(sequelize, Sequelize))
+  .filter(model => typeof model.associate === "function")
+  .forEach(model => model.associate());
 
 process.on('uncaughtException', (err) => {
   connectionPool.end();

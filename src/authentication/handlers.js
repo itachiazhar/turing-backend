@@ -1,8 +1,7 @@
-const { DB, mysql } = require('./../utils/database');
+const { sequelize, Sequelize } = require('./../utils/database');
 const logger = require('./../utils/logger');
 const bcrypt = require('bcrypt-nodejs');
 const config = require('./../configs/turing');
-const Customer = require('./../models/customers');
 const JWT = require('./../utils/jwt');
 const _ = require('lodash');
 const {
@@ -16,13 +15,14 @@ const {
 class AuthenticationHandler {
 
   static async register (req, res) {
+    const { Customer } = sequelize.models;
     const { name, email, password } = req.body;
-    const exists = await Customer.getByEmail(email);
+    const exists = await Customer.routineGetByEmail(email);
     if (exists.length > 0) {
       const err = new ResourceExistsError('customer with email exists');
       return res.status(err.statusCode).json(err);
     }
-    await Customer.add({
+    await Customer.routineCustomerAdd({
       name,
       email,
       password: bcrypt.hashSync(password, config.salt)
@@ -33,7 +33,7 @@ class AuthenticationHandler {
 
   static async login (req, res) {
     const { email, password } = req.body;
-    const exists = await Customer.getByEmail(email);
+    const exists = await Customer.routineGetByEmail(email);
     if (exists.length === 0) {
       const err = new ResourceNotFoundError('customer with email does not exists');
       return res.status(err.statusCode).json(err);
